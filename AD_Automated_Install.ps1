@@ -108,7 +108,3 @@ elseif ($Status -eq 1)
     # Begins to install Active Directory Services
     InstallAD
 }
-elseif ($Status -eq 2)
-{
-
-}
