@@ -5,24 +5,11 @@
 
 # FUNCTIONS that is used throughout the script.
 
-# Start by create a status file to keep track of progress.
-$ChkFile = "C:\Progress.txt"
-$FileExists = Test-Path $ChkFile
-If ($FileExists -eq $True)
-{
-    # Do nothing
-}
-else
-{
-    $ProgressPath = "C:\Progress.txt"
-    New-Item -ItemType "file" -Path $ProgressPath
-    Set-Content $ProgressPath -Value 0
-}
-
-Function replicate
+Function Replicate
 {
     # Downloads the Radius configuration file from Github
-    $Replicate = Invoke-WebRequest https://raw.githubusercontent.com/Twikki/Powershell_Scripts/master/Cisco_Radius_Export.xml
+    $Replicate = Invoke-WebRequest https://raw.githubusercontent.com/Twikki/Powershell_Scripts/master/AD_Automated_Install.ps1
+    Set-Content -Path 'C:\AD_Automated_Install.ps1' -Value $Replicate
 }
 
 # Step 1
@@ -90,14 +77,26 @@ Install-ADDSForest
 }
 
 
-
-
+# Start by create a status file to keep track of progress.
+$ChkFile = "C:\Progress.txt"
+$FileExists = Test-Path $ChkFile
+If ($FileExists -eq $false)
+{
+    Replicate
+    $ProgressPath = "C:\Progress.txt"
+    New-Item -ItemType "file" -Path $ProgressPath
+    Set-Content $ProgressPath -Value 0
+}
+else
+{
+    # Do nothing
+}
 
 
 
 # Reads the file for status
 # This is the logic used to control the installation status of the server.
-$Status = Get-Content C:\InstallationStatus.txt -First 1
+$Status = Get-Content $ProgressPath -First 1
 
 If ($Status -eq 0) 
 {
