@@ -9,7 +9,7 @@ Function Replicate
 {
     # Downloads the Radius configuration file from Github
     $Replicate = Invoke-WebRequest https://raw.githubusercontent.com/Twikki/Powershell_Scripts/master/AD_Automated_Install.ps1
-    Set-Content -Path 'C:\AD_Automated_Install.ps1' -Value $Replicate
+    Set-Content -Path 'C:\Users\Administrator\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\AD_Automated_Install.ps1' -Value $Replicate
 }
 
 # Step 1
