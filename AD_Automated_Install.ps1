@@ -76,6 +76,7 @@ Install-ADDSForest
 
 }
 
+$ProgressPath = "C:\Progress.txt"
 
 # Start by create a status file to keep track of progress.
 $ChkFile = "C:\Progress.txt"
@@ -83,7 +84,6 @@ $FileExists = Test-Path $ChkFile
 If ($FileExists -eq $false)
 {
     Replicate
-    $ProgressPath = "C:\Progress.txt"
     New-Item -ItemType "file" -Path $ProgressPath
     Set-Content $ProgressPath -Value 0
 }
