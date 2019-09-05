@@ -27,7 +27,7 @@ function RenameServer
     Rename-Computer -NewName $ServerName -Restart
 }
 
-
+# Step 2
 function InstallAD 
 {
 
@@ -80,11 +80,19 @@ Install-ADDSForest
  -SysvolPath "C:\Windows\SYSVOL" `
  -Force:$true
 
+ Set-Content $ProgressPath -Value 2
 }
+
+
+
+#
+# Start by create a status file to keep track of progress.
+#
+# Script starts here
+#
 
 $ProgressPath = "C:\Progress.txt"
 
-# Start by create a status file to keep track of progress.
 $ChkFile = "C:\Progress.txt"
 $FileExists = Test-Path $ChkFile
 If ($FileExists -eq $false)
