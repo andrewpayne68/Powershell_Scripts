@@ -4,7 +4,7 @@
 
 # Schedule task parameters
 # PowerShell.exe
-# -windowstyle hidden C:\Scripts\Automated_WindowsUpdates.ps1
+# -windowstyle hidden C:\Scripts\Automated_Windows_Updates.ps1
 
 # Script to automatically install Windows updates
 Function InstallWindowsModules
