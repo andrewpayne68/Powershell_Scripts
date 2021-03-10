@@ -6,6 +6,8 @@
 # It will clean up after itself when done installing.
 
 
+Set-ExecutionPolicy remotesigned -force
+
 # Configure these options here
 
 # Servername
@@ -17,6 +19,7 @@ $Domainnetbiosname = "VIEMOSEINTERN"
 $ServerIP = '192.168.0.235'
 $ServerMask = '24'
 $ServerGateway = '192.168.0.1'
+$ipif = (Get-NetAdapter).ifIndex
 $ServerPrimaryDNS = '8.8.8.8'
 $ServerSecondaryDNS = '8.8.4.4'
 
@@ -49,18 +52,14 @@ function RenameServer
 function InstallAD 
 {
 
-
-# Finds all the network interfaces on this machine
-Get-NetAdapter -Name "*"
-
-$Interfaceifindex = Read-Host 'Please enter the Network interface Ifindex number you wish to configure'
-Set-NetIPAddress -InterfaceIndex $Interfaceifindex
-
 # Sets the server's ip address, subnetmask and Gateway
-New-NetIPAddress -InterfaceIndex $Interfaceifindex -IPAddress $ServerIP -PrefixLength $ServerMask -DefaultGateway $ServerGateway
+#New-NetIPAddress -InterfaceIndex $ipif -IPAddress $ServerIP -PrefixLength $ServerMask -DefaultGateway $ServerGateway
+
+# From Microsoft
+New-NetIPAddress -IPAddress $ServerIP -PrefixLength $ServerMask ` -InterfaceIndex $ipif -DefaultGateway $ServerGateway
 
 # Sets the server's DNS 
-Set-DnsClientServerAddress -InterfaceIndex $Interfaceifindex -ServerAddresses ($ServerPrimaryDNS,$ServerSecondaryDNS)
+Set-DnsClientServerAddress -InterfaceIndex $ipif -ServerAddresses ($ServerPrimaryDNS,$ServerSecondaryDNS)
 
 Write-Host 'Static ip and DNS has been set. Starting installation of AD' -ForegroundColor Green
 
@@ -70,22 +69,21 @@ Install-windowsfeature -name AD-Domain-Services -IncludeManagementTools
 # Imports the modules needed
 Import-Module ADDSDeployment
 
-Write-Host 'AD Modules has been installed and Imported. We need a few more details.' -ForegroundColor Green
+Write-Host 'AD Modules has been installed and imported. Beginning installation' -ForegroundColor Green
 
 
 # Installs the forest with parameters
-Install-ADDSForest
- -CreateDnsDelegation:$false `
- -DatabasePath "C:\Windows\NTDS" `
- -DomainMode "WinTreshold" `
- -DomainName $DomainName `
- -DomainNetbiosName $DomainNetbiosName `
- -ForestMode "WinTreshold" `
- -InstallDns:$true `
- -LogPath "C:\Windows\NTDS" `
- -NoRebootOnCompletion:$false `
- -SysvolPath "C:\Windows\SYSVOL" `
- -Force:$true
+Install-ADDSForest -CreateDnsDelegation:$false `
+-DatabasePath “C:\Windows\NTDS” `
+-DomainMode “Win2012” `
+-DomainName $DomainName `
+-DomainNetbiosName $Domainnetbiosname `
+-ForestMode “Win2016” `
+-InstallDns:$true `
+-LogPath “C:\Windows\NTDS” `
+-NoRebootOnCompletion:$false `
+-SysvolPath “C:\Windows\SYSVOL” `
+-Force:$true
 
  Set-Content $ProgressPath -Value 2
 }
