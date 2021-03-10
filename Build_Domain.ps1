@@ -1,28 +1,45 @@
+# Daniel Jean Schmidt
+# Last updated: 10/03/2021
+
 # This script is going to set up an AD server, with minimal effort as an administrator.
 # The script will replicate itself from Github, and will continue after reboots. 
 # It will clean up after itself when done installing.
 
 
+# Configure these options here
+
+# Servername
+$ServerName = "DomainController01"
+# Domain
+$DomainName = "Viemoseintern.nu"
+$Domainnetbiosname = "VIEMOSEINTERN"
+# Network
+$ServerIP = '192.168.0.235'
+$ServerMask = '24'
+$ServerGateway = '192.168.0.1'
+$ServerPrimaryDNS = '8.8.8.8'
+$ServerSecondaryDNS = '8.8.4.4'
+
+
+
 # FUNCTIONS that is used throughout the script.
 
+# Initial step ( Replicate scripts to local server from Github )
 Function Replicate
 {
-    # Downloads the Radius configuration file from Github
-    $Replicate = Invoke-WebRequest https://raw.githubusercontent.com/Twikki/Powershell_Scripts/master/AD_Automated_Install.ps1
-    Set-Content -Path 'C:\AD_Automated_Install.ps1' -Value $Replicate
+    # Downloads the automated script file from Github
+    $Replicate = Invoke-WebRequest https://raw.githubusercontent.com/Twikki/Powershell_Scripts/master/Build_Domain.ps1
+    Set-Content -Path 'C:\Scripts\Build_Domain.ps1' -Value $Replicate
 
-        # Downloads the Radius configuration file from Github
-        $Replicatetwo = Invoke-WebRequest https://raw.githubusercontent.com/Twikki/Powershell_Scripts/master/RunPowershell.cmd
-        Set-Content -Path 'C:\Users\Administrator\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\RunPowershell.cmd' -Value $Replicatetwo
-    
-
+    # Downloads the CMD file from Github
+    $Replicatetwo = Invoke-WebRequest https://raw.githubusercontent.com/Twikki/Powershell_Scripts/master/RunPowershell.cmd
+    Set-Content -Path 'C:\Users\Administrator\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\RunPowershell.cmd' -Value $Replicatetwo
 }
+
 
 # Step 1
 function RenameServer 
 {
-    Write-Host 'Hey there, first we need to rename this server before installing Active Directory Services. :)' -ForegroundColor Green
-    $ServerName = Read-Host 'Please enter a name for this machine'
     Set-Content $ProgressPath -Value 1
     Rename-Computer -NewName $ServerName -Restart
 }
@@ -31,13 +48,6 @@ function RenameServer
 # Step 2
 function InstallAD 
 {
-
-    
-$ServerIP = Read-Host 'Please enter your servers static IP'
-$ServerMask = Read-Host 'Please enter the network subnet mask in prefix. like 24 for /24'
-$ServerGateway = Read-Host 'Please enter your servers default gateway'
-$ServerPrimaryDNS = Read-Host 'Please enter your primary DNS'
-$ServerSecondaryDNS = Read-Host 'Please enter your secondary DNS'
 
 
 # Finds all the network interfaces on this machine
@@ -62,10 +72,6 @@ Import-Module ADDSDeployment
 
 Write-Host 'AD Modules has been installed and Imported. We need a few more details.' -ForegroundColor Green
 
-# Values used for below installation
-#$Domainandforestmode = Read-Host 'Please enter a Domain mode. Accepted values are: Win2008, Win2008R2, Win2012, Win2012R2, Win2016'
-$Domainname = Read-Host 'Please enter a Domain name. Like mydomain.com'
-$Domainnetbiosname = Read-Host 'Please enter a Net bios name'
 
 # Installs the forest with parameters
 Install-ADDSForest
@@ -86,11 +92,17 @@ Install-ADDSForest
 
 
 
-#
-# Start by create a status file to keep track of progress.
-#
-# Script starts here
-#
+# Logic starts here
+
+# Checks if folder "AutoUpdates already exists on the server. If it doesn't it creates it."
+$ChkPath = "C:\Scripts"
+$PathExists = Test-Path $ChkPath
+If ($PathExists -eq $false)
+{
+    mkdir C:\Scripts
+}
+
+
 
 $ProgressPath = "C:\Progress.txt"
 
@@ -102,11 +114,6 @@ If ($FileExists -eq $false)
     New-Item -ItemType "file" -Path $ProgressPath
     Set-Content $ProgressPath -Value 0
 }
-else
-{
-    # Do nothing
-}
-
 
 
 # Reads the file for status
