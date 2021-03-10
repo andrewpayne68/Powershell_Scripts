@@ -72,10 +72,9 @@ Import-Module ADDSDeployment
 Write-Host 'AD Modules has been installed and imported. Beginning installation' -ForegroundColor Green
 
 
-# Installs the forest with parameters
 Install-ADDSForest -CreateDnsDelegation:$false `
 -DatabasePath “C:\Windows\NTDS” `
--DomainMode “Win2012” `
+-DomainMode “Win2016” `
 -DomainName $DomainName `
 -DomainNetbiosName $Domainnetbiosname `
 -ForestMode “Win2016” `
@@ -84,6 +83,8 @@ Install-ADDSForest -CreateDnsDelegation:$false `
 -NoRebootOnCompletion:$false `
 -SysvolPath “C:\Windows\SYSVOL” `
 -Force:$true
+
+
 
  Set-Content $ProgressPath -Value 2
 }
