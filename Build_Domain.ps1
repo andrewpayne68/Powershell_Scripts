@@ -44,7 +44,7 @@ Function Replicate
 function RenameServer 
 {
     Set-Content $ProgressPath -Value 1
-    Rename-Computer -NewName $ServerName -Restart
+    Rename-Computer -NewName "$ServerName" -Force -Restart
 }
 
 
@@ -72,19 +72,24 @@ Import-Module ADDSDeployment
 Write-Host 'AD Modules has been installed and imported. Beginning installation' -ForegroundColor Green
 
 
-Install-ADDSForest -CreateDnsDelegation:$false `
--DatabasePath “C:\Windows\NTDS” `
--DomainMode “Win2016” `
--DomainName $DomainName `
--DomainNetbiosName $Domainnetbiosname `
--ForestMode “Win2016” `
--InstallDns:$true `
--LogPath “C:\Windows\NTDS” `
--NoRebootOnCompletion:$false `
--SysvolPath “C:\Windows\SYSVOL” `
--Force:$true
+# Installs the forest with parameters
+Install-ADDSForest
+ -CreateDnsDelegation:$false `
+ -DatabasePath "C:\Windows\NTDS" `
+ -DomainMode "WinTreshold" `
+ -DomainName $DomainName `
+ -DomainNetbiosName $DomainNetbiosName `
+ -ForestMode "WinTreshold" `
+ -InstallDns:$true `
+ -LogPath "C:\Windows\NTDS" `
+ -NoRebootOnCompletion:$false `
+ -SysvolPath "C:\Windows\SYSVOL" `
+ -Force:$true
 
+$Domainname = "viemose.nu"
+$Domainnamebios = "VIEMOSE"
 
+Install-ADDSForest -DomainName $Domainname -DomainNetbiosName $Domainnamebios -DomainMode WinThreshold -ForestMode WinThreshold -CreateDnsDelegation:$false -DatabasePath "C:\Windows\NTDS" -InstallDns:$true -LogPath "C:\Windows\NTDS" -NoRebootOnCompletion:$false -SysvolPath "C:\Windows\SYSVOL" -Force:$true
 
  Set-Content $ProgressPath -Value 2
 }
@@ -124,7 +129,7 @@ If ($Status -eq 0)
     # Renames the server
     RenameServer
 }
-elseif ($Status -eq 1)
+elseif ($Status -eq 5)
 {
     # Begins to install Active Directory Services
     InstallAD
