@@ -5,9 +5,6 @@
 # The script will replicate itself from Github, and will continue after reboots. 
 # It will clean up after itself when done installing.
 
-
-Set-ExecutionPolicy remotesigned -force
-
 #
 # Configure these options here
 #
