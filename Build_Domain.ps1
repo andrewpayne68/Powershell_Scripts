@@ -15,6 +15,7 @@ $ServerName = "DomainController01"
 # Domain
 $DomainName = "Viemoseintern.nu"
 $Domainnetbiosname = "VIEMOSEINTERN"
+$SafeModeAdministratorPassword = ConvertTo-SecureString "Twikkibanan25!" -AsPlainText -Force
 # Network
 $ServerIP = '192.168.0.235'
 $ServerMask = '24'
@@ -71,27 +72,11 @@ Import-Module ADDSDeployment
 
 Write-Host 'AD Modules has been installed and imported. Beginning installation' -ForegroundColor Green
 
-
-# Installs the forest with parameters
-Install-ADDSForest
- -CreateDnsDelegation:$false `
- -DatabasePath "C:\Windows\NTDS" `
- -DomainMode "WinTreshold" `
- -DomainName $DomainName `
- -DomainNetbiosName $DomainNetbiosName `
- -ForestMode "WinTreshold" `
- -InstallDns:$true `
- -LogPath "C:\Windows\NTDS" `
- -NoRebootOnCompletion:$false `
- -SysvolPath "C:\Windows\SYSVOL" `
- -Force:$true
-
-$Domainname = "viemose.nu"
-$Domainnamebios = "VIEMOSE"
-
-Install-ADDSForest -DomainName $Domainname -DomainNetbiosName $Domainnamebios -DomainMode WinThreshold -ForestMode WinThreshold -CreateDnsDelegation:$false -DatabasePath "C:\Windows\NTDS" -InstallDns:$true -LogPath "C:\Windows\NTDS" -NoRebootOnCompletion:$false -SysvolPath "C:\Windows\SYSVOL" -Force:$true
-
- Set-Content $ProgressPath -Value 2
+# Installs AD
+Install-ADDSForest -DomainName $Domainname -DomainNetbiosName $Domainnamebios -DomainMode WinThreshold -ForestMode WinThreshold -CreateDnsDelegation:$false -DatabasePath "C:\Windows\NTDS" -InstallDns:$true -LogPath "C:\Windows\NTDS" -NoRebootOnCompletion:$false -SysvolPath "C:\Windows\SYSVOL" -Force:$true -SafeModeAdministratorPassword:$SafeModeAdministratorPassword
+ 
+ 
+Set-Content $ProgressPath -Value 2
 }
 
 
