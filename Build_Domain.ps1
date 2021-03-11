@@ -8,7 +8,9 @@
 
 Set-ExecutionPolicy remotesigned -force
 
+#
 # Configure these options here
+#
 
 # Servername
 $ServerName = "DomainController01"
@@ -20,11 +22,14 @@ $SafeModeAdministratorPassword = ConvertTo-SecureString "Twikkibanan25!" -AsPlai
 $ServerIP = '192.168.0.235'
 $ServerMask = '24'
 $ServerGateway = '192.168.0.1'
-$ipif = (Get-NetAdapter).ifIndex
 $ServerPrimaryDNS = '8.8.8.8'
 $ServerSecondaryDNS = '8.8.4.4'
+$ipif = (Get-NetAdapter).ifIndex
 
 
+#########
+#########
+#########
 
 # FUNCTIONS that is used throughout the script.
 
