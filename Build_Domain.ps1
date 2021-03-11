@@ -116,7 +116,7 @@ If ($Status -eq 0)
     # Renames the server
     RenameServer
 }
-elseif ($Status -eq 5)
+elseif ($Status -eq 1)
 {
     # Begins to install Active Directory Services
     InstallAD
