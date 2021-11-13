@@ -20,7 +20,6 @@ Function InstallWindowsModules
 
     # Sets Progress file to 1, to indicate modules etc. are installed.
     Set-Content C:\AutoUpdates\Progress.txt -Value 1
-
 }
 
 Function InstallWindowsUpdates
@@ -30,7 +29,6 @@ Function InstallWindowsUpdates
 
     #Installs updates, accepts all automatically and reboots.
     Install-WindowsUpdate -Install -AcceptAll -AutoReboot
-
 }
 
 
