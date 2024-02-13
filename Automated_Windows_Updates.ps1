@@ -25,10 +25,10 @@ Function InstallWindowsModules
 Function InstallWindowsUpdates
 {
     # Gets latest Windows updates
-    Get-WindowsUpdate -Verbose | Format-Table | Out-File C:\AutoUpdates\History\Updates_"$((Get-Date).ToString('dd-MM-yyyy_HH.mm.ss'))".txt
+    Get-WindowsUpdate -Verbose | Format-Table
 
     #Installs updates, accepts all automatically and reboots.
-    Install-WindowsUpdate -Install -AcceptAll -AutoReboot -Verbose
+    Install-WindowsUpdate -Install -AcceptAll -AutoReboot -Verbose | Out-File C:\AutoUpdates\History\Updates_"$((Get-Date).ToString('dd-MM-yyyy_HH.mm.ss'))".txt
 }
 
 
