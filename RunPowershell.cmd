@@ -1,6 +1,6 @@
 @ECHO OFF
 if "%1" == "elevated" goto start
-powershell -command "Start-Process %~nx0 elevated -Verb runas"
+powershell -command "Start-Process %~dpnx0 elevated -Verb runas"
 goto :EOF
 
 :start
